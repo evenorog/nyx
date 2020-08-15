@@ -42,7 +42,7 @@ pub fn generate(key: &[u8], time: u64) -> u32 {
 
 /// The TOTP token generator.
 #[derive(Copy, Clone, Debug)]
-pub struct Totp {
+struct Totp {
     digits: u32,
     skew: u8,
     step: u64,
@@ -52,18 +52,12 @@ impl Totp {
     /// Returns a new TOTP struct with default values.
     ///
     /// This will generate 6 digits codes, with a skew of 1 and step size of 30.
-    ///
-    /// This is equivalent to:
-    /// ```
-    /// # use nyx::Totp;
-    /// Totp::options(6, 1, 30);
-    /// ```
-    pub const fn new() -> Totp {
+    const fn new() -> Totp {
         Totp::options(6, 1, 30)
     }
 
     /// Returns a new TOTP struct with the provided options.
-    pub const fn options(digits: u32, skew: u8, step: u64) -> Totp {
+    const fn options(digits: u32, skew: u8, step: u64) -> Totp {
         Totp { digits, skew, step }
     }
 
@@ -75,7 +69,7 @@ impl Totp {
     }
 
     /// Generates the TOTP value.
-    pub fn generate(&self, key: &[u8], time: u64) -> u32 {
+    fn generate(&self, key: &[u8], time: u64) -> u32 {
         let hash = &*self.sign(key, time).into_bytes();
         let offset = (hash[19] & 15) as usize;
         let buf = &hash[offset..offset + 4];
@@ -84,7 +78,7 @@ impl Totp {
     }
 
     /// Checks if the given token matches the provided key and time.
-    pub fn verify(&self, key: &[u8], time: u64, token: u32) -> bool {
+    fn verify(&self, key: &[u8], time: u64, token: u32) -> bool {
         let offset = time / self.step - self.skew as u64;
         for i in 0..self.skew * 2 + 1 {
             let step_time = (offset + i as u64) * (self.step as u64);
