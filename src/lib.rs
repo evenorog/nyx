@@ -18,7 +18,7 @@ use hmac::crypto_mac::Output;
 use hmac::{Hmac, Mac, NewMac};
 use sha1::Sha1;
 
-/// Convenience function for verifying TOTP tokens.
+/// Function for verifying TOTP tokens.
 ///
 /// This will expect a 6 digits token, and use a skew of 1 and step size of 30.
 ///
@@ -29,7 +29,7 @@ pub fn verify(key: &[u8], time: u64, token: u32) -> bool {
     Totp::new().verify(key, time, token)
 }
 
-/// Convenience function for generating TOTP tokens.
+/// Function for generating TOTP tokens.
 ///
 /// This will generate 6 digits codes with step size of 30.
 ///
