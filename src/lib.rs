@@ -1,11 +1,15 @@
 //! Small `no-std` implementation of the TOTP algorithm.
 //!
+//! Only SHA-1 is supported.
+//!
 //! ```no_run
 //! use std::time::SystemTime;
 //!
 //! let time = SystemTime::UNIX_EPOCH.elapsed().unwrap().as_secs();
 //! let _ = nyx::generate(b"12345678901234567890", time);
 //! ```
+//!
+//! Thanks to [totp-rs](https://crates.io/crates/totp-rs) for providing the code this crate is based on.
 
 #![no_std]
 
@@ -27,10 +31,10 @@ pub fn verify(key: &[u8], time: u64, token: u32) -> bool {
 
 /// Convenience function for generating TOTP tokens.
 ///
-/// This will generate 6 digits codes, with a skew of 1 and step size of 30.
+/// This will generate 6 digits codes with step size of 30.
 ///
 /// ```
-/// assert!(nyx::verify(b"12345678901234567890", 59, 287082));
+/// assert_eq!(nyx::generate(b"12345678901234567890", 59), 287082);
 /// ```
 pub fn generate(key: &[u8], time: u64) -> u32 {
     Totp::new().generate(key, time)
