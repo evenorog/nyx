@@ -9,7 +9,7 @@
 //! let _ = nyx::generate(b"12345678901234567890", time);
 //! ```
 //!
-//! Thanks to [totp-rs](https://crates.io/crates/totp-rs) for providing the code this crate is based on.
+//! Based on the implementation from [totp-rs](https://crates.io/crates/totp-rs).
 
 #![no_std]
 
@@ -18,16 +18,7 @@ use hmac::crypto_mac::Output;
 use hmac::{Hmac, Mac, NewMac};
 use sha1::Sha1;
 
-/// Function for verifying TOTP tokens.
-///
-/// This will expect a 6 digits token, and use a skew of 1 and step size of 30.
-///
-/// ```
-/// assert!(nyx::verify(b"12345678901234567890", 59, 287082));
-/// ```
-pub fn verify(key: &[u8], time: u64, token: u32) -> bool {
-    Totp::new().verify(key, time, token)
-}
+const TOTP: Totp = Totp::new();
 
 /// Function for generating TOTP tokens.
 ///
@@ -37,7 +28,18 @@ pub fn verify(key: &[u8], time: u64, token: u32) -> bool {
 /// assert_eq!(nyx::generate(b"12345678901234567890", 59), 287082);
 /// ```
 pub fn generate(key: &[u8], time: u64) -> u32 {
-    Totp::new().generate(key, time)
+    TOTP.generate(key, time)
+}
+
+/// Function for verifying TOTP tokens.
+///
+/// This will expect a 6 digits token, and use a skew of 1 and step size of 30.
+///
+/// ```
+/// assert!(nyx::verify(b"12345678901234567890", 59, 287082));
+/// ```
+pub fn verify(key: &[u8], time: u64, token: u32) -> bool {
+    TOTP.verify(key, time, token)
 }
 
 /// The TOTP token generator.
@@ -70,7 +72,7 @@ impl Totp {
 
     /// Generates the TOTP value.
     fn generate(&self, key: &[u8], time: u64) -> u32 {
-        let hash = &*self.sign(key, time).into_bytes();
+        let hash = self.sign(key, time).into_bytes();
         let offset = (hash[19] & 15) as usize;
         let buf = &hash[offset..offset + 4];
         let data = BigEndian::read_u32(buf) & 0x7fff_ffff;

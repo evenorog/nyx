@@ -15,7 +15,7 @@ let time = SystemTime::UNIX_EPOCH.elapsed().unwrap().as_secs();
 let _ = nyx::generate(b"12345678901234567890", time);
 ```
 
-Thanks to [totp-rs](https://crates.io/crates/totp-rs) for providing the code this crate is based on.
+Based on the implementation from [totp-rs](https://crates.io/crates/totp-rs).
 
 ### License
 
