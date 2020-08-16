@@ -83,7 +83,7 @@ impl Totp {
     fn verify(&self, key: &[u8], time: u64, token: u32) -> bool {
         let offset = time / self.step - self.skew as u64;
         for i in 0..self.skew * 2 + 1 {
-            let step_time = (offset + i as u64) * (self.step as u64);
+            let step_time = (offset + i as u64) * self.step;
             if self.generate(key, step_time) == token {
                 return true;
             }
