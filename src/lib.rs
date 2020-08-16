@@ -2,7 +2,7 @@
 //!
 //! Only SHA-1 is supported.
 //!
-//! ```no_run
+//! ```
 //! use std::time::SystemTime;
 //!
 //! let time = SystemTime::UNIX_EPOCH.elapsed().unwrap().as_secs();
