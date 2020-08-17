@@ -105,7 +105,7 @@ mod tests {
     #[test]
     fn totp_8_digits() {
         // Test values from https://tools.ietf.org/html/rfc6238.
-        const TOTP: Totp = Totp::options(8, 1, 30);
+        const TOTP: Totp = Totp::options(8, 0, 30);
         assert!(TOTP.verify(b"12345678901234567890", 59, 94287082));
         assert!(TOTP.verify(b"12345678901234567890", 1111111109, 7081804));
         assert!(TOTP.verify(b"12345678901234567890", 1111111111, 14050471));
