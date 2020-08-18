@@ -13,7 +13,7 @@
 
 #![no_std]
 
-use byteorder::{BigEndian, ByteOrder};
+use core::convert::TryInto;
 use hmac::crypto_mac::Output;
 use hmac::{Hmac, Mac, NewMac};
 use sha1::Sha1;
@@ -63,6 +63,7 @@ impl Totp {
         Totp { digits, skew, step }
     }
 
+    // Sign using SHA1.
     fn sign(&self, key: &[u8], time: u64) -> Output<Hmac<Sha1>> {
         let ctr = (time / self.step).to_be_bytes();
         let mut mac = Hmac::<Sha1>::new_varkey(key).unwrap();
@@ -75,7 +76,8 @@ impl Totp {
         let hash = self.sign(key, time).into_bytes();
         let offset = (hash[19] & 15) as usize;
         let buf = &hash[offset..offset + 4];
-        let data = BigEndian::read_u32(buf) & 0x7fff_ffff;
+        let buf: [u8; 4] = buf.try_into().unwrap();
+        let data = u32::from_be_bytes(buf) & 0x7fff_ffff;
         data % (10 as u32).pow(self.digits)
     }
 
