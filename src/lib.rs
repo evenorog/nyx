@@ -78,7 +78,7 @@ impl Totp {
         let buf = &hash[offset..offset + 4];
         let buf: [u8; 4] = buf.try_into().unwrap();
         let data = u32::from_be_bytes(buf) & 0x7fff_ffff;
-        data % (10 as u32).pow(self.digits)
+        data % 10_u32.pow(self.digits)
     }
 
     /// Checks if the given token matches the provided key and time.
