@@ -5,8 +5,8 @@
 //! ```
 //! use std::time::SystemTime;
 //!
-//! let time = SystemTime::UNIX_EPOCH.elapsed().unwrap().as_secs();
-//! let _ = nyx::generate(b"12345678901234567890", time);
+//! let secs = SystemTime::UNIX_EPOCH.elapsed().unwrap().as_secs();
+//! let _ = nyx::generate(b"12345678901234567890", secs);
 //! ```
 //!
 //! Based on the implementation from [totp-rs](https://crates.io/crates/totp-rs).
@@ -27,8 +27,8 @@ const TOTP: Totp = Totp::new();
 /// ```
 /// assert_eq!(nyx::generate(b"12345678901234567890", 59), 287082);
 /// ```
-pub fn generate(key: impl AsRef<[u8]>, time: u64) -> u32 {
-    TOTP.generate(key.as_ref(), time)
+pub fn generate(key: impl AsRef<[u8]>, secs: u64) -> u32 {
+    TOTP.generate(key.as_ref(), secs)
 }
 
 /// Function for verifying TOTP tokens.
@@ -38,8 +38,8 @@ pub fn generate(key: impl AsRef<[u8]>, time: u64) -> u32 {
 /// ```
 /// assert!(nyx::verify(b"12345678901234567890", 59, 287082));
 /// ```
-pub fn verify(key: impl AsRef<[u8]>, time: u64, token: u32) -> bool {
-    TOTP.verify(key.as_ref(), time, token)
+pub fn verify(key: impl AsRef<[u8]>, secs: u64, token: u32) -> bool {
+    TOTP.verify(key.as_ref(), secs, token)
 }
 
 /// The TOTP token generator.
@@ -64,16 +64,16 @@ impl Totp {
     }
 
     // Sign using SHA1.
-    fn sign(&self, key: &[u8], time: u64) -> Output<Hmac<Sha1>> {
-        let ctr = (time / self.step).to_be_bytes();
+    fn sign(&self, key: &[u8], secs: u64) -> Output<Hmac<Sha1>> {
+        let ctr = (secs / self.step).to_be_bytes();
         let mut mac = Hmac::<Sha1>::new_varkey(key).unwrap();
         mac.update(&ctr);
         mac.finalize()
     }
 
     /// Generates the TOTP value.
-    fn generate(&self, key: &[u8], time: u64) -> u32 {
-        let signed = self.sign(key, time).into_bytes();
+    fn generate(&self, key: &[u8], secs: u64) -> u32 {
+        let signed = self.sign(key, secs).into_bytes();
         let offset = (signed[19] & 15) as usize;
         let buf = &signed[offset..offset + 4];
         let buf: [u8; 4] = buf.try_into().unwrap();
@@ -82,11 +82,11 @@ impl Totp {
     }
 
     /// Checks if the given token matches the provided key and time.
-    fn verify(&self, key: &[u8], time: u64, token: u32) -> bool {
-        let offset = time / self.step - self.skew as u64;
+    fn verify(&self, key: &[u8], secs: u64, token: u32) -> bool {
+        let offset = secs / self.step - self.skew as u64;
         for i in 0..self.skew * 2 + 1 {
-            let step_time = (offset + i as u64) * self.step;
-            if self.generate(key, step_time) == token {
+            let secs = (offset + i as u64) * self.step;
+            if self.generate(key, secs) == token {
                 return true;
             }
         }
