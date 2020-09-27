@@ -27,8 +27,8 @@ const TOTP: Totp = Totp::new();
 /// ```
 /// assert_eq!(nyx::generate(b"12345678901234567890", 59), 287082);
 /// ```
-pub fn generate(key: &[u8], time: u64) -> u32 {
-    TOTP.generate(key, time)
+pub fn generate(key: impl AsRef<[u8]>, time: u64) -> u32 {
+    TOTP.generate(key.as_ref(), time)
 }
 
 /// Function for verifying TOTP tokens.
@@ -38,8 +38,8 @@ pub fn generate(key: &[u8], time: u64) -> u32 {
 /// ```
 /// assert!(nyx::verify(b"12345678901234567890", 59, 287082));
 /// ```
-pub fn verify(key: &[u8], time: u64, token: u32) -> bool {
-    TOTP.verify(key, time, token)
+pub fn verify(key: impl AsRef<[u8]>, time: u64, token: u32) -> bool {
+    TOTP.verify(key.as_ref(), time, token)
 }
 
 /// The TOTP token generator.
@@ -73,9 +73,9 @@ impl Totp {
 
     /// Generates the TOTP value.
     fn generate(&self, key: &[u8], time: u64) -> u32 {
-        let hash = self.sign(key, time).into_bytes();
-        let offset = (hash[19] & 15) as usize;
-        let buf = &hash[offset..offset + 4];
+        let signed = self.sign(key, time).into_bytes();
+        let offset = (signed[19] & 15) as usize;
+        let buf = &signed[offset..offset + 4];
         let buf: [u8; 4] = buf.try_into().unwrap();
         let data = u32::from_be_bytes(buf) & 0x7fff_ffff;
         data % 10_u32.pow(self.digits)
