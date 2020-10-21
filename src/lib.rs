@@ -18,7 +18,8 @@ use hmac::crypto_mac::Output;
 use hmac::{Hmac, Mac, NewMac};
 use sha1::Sha1;
 
-const TOTP: Totp = Totp::new();
+/// This will generate 6 digits codes, with a skew of 1 and step size of 30.
+const TOTP: Totp = Totp::options(6, 1, 30);
 
 /// Function for generating TOTP tokens.
 ///
@@ -51,13 +52,6 @@ struct Totp {
 }
 
 impl Totp {
-    /// Returns a new TOTP struct with default values.
-    ///
-    /// This will generate 6 digits codes, with a skew of 1 and step size of 30.
-    const fn new() -> Totp {
-        Totp::options(6, 1, 30)
-    }
-
     /// Returns a new TOTP struct with the provided options.
     const fn options(digits: u32, skew: u8, step: u64) -> Totp {
         Totp { digits, skew, step }
@@ -96,7 +90,7 @@ impl Totp {
 
 impl Default for Totp {
     fn default() -> Self {
-        Totp::new()
+        TOTP
     }
 }
 
