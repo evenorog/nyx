@@ -12,7 +12,7 @@ Only SHA-1 is supported.
 use std::time::SystemTime;
 
 let secs = SystemTime::UNIX_EPOCH.elapsed().unwrap().as_secs();
-let _ = nyx::generate(b"12345678901234567890", secs);
+let _ = nyx::generate("12345678901234567890", secs);
 ```
 
 Based on the implementation from [totp-rs](https://crates.io/crates/totp-rs).

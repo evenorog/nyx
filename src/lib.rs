@@ -6,7 +6,7 @@
 //! use std::time::SystemTime;
 //!
 //! let secs = SystemTime::UNIX_EPOCH.elapsed().unwrap().as_secs();
-//! let _ = nyx::generate(b"12345678901234567890", secs);
+//! let _ = nyx::generate("12345678901234567890", secs);
 //! ```
 //!
 //! Based on the implementation from [totp-rs](https://crates.io/crates/totp-rs).
@@ -26,7 +26,7 @@ const TOTP: Totp = Totp::options(6, 1, 30);
 /// This will generate 6 digits codes with step size of 30.
 ///
 /// ```
-/// assert_eq!(nyx::generate(b"12345678901234567890", 59), 287082);
+/// assert_eq!(nyx::generate("12345678901234567890", 59), 287082);
 /// ```
 pub fn generate(key: impl AsRef<[u8]>, secs: u64) -> u32 {
     TOTP.generate(key.as_ref(), secs)
@@ -37,7 +37,7 @@ pub fn generate(key: impl AsRef<[u8]>, secs: u64) -> u32 {
 /// This will expect a 6 digits token, and use a skew of 1 and step size of 30.
 ///
 /// ```
-/// assert!(nyx::verify(b"12345678901234567890", 59, 287082));
+/// assert!(nyx::verify("12345678901234567890", 59, 287082));
 /// ```
 pub fn verify(key: impl AsRef<[u8]>, secs: u64, token: u32) -> bool {
     TOTP.verify(key.as_ref(), secs, token)
