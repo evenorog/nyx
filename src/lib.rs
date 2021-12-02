@@ -60,7 +60,7 @@ impl Totp {
     // Sign using SHA1.
     fn sign(&self, key: &[u8], secs: u64) -> Output<Hmac<Sha1>> {
         let ctr = (secs / self.step).to_be_bytes();
-        let mut mac = Hmac::<Sha1>::new_varkey(key).unwrap();
+        let mut mac = Hmac::<Sha1>::new_from_slice(key).unwrap();
         mac.update(&ctr);
         mac.finalize()
     }
