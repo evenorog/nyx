@@ -1,6 +1,6 @@
 # nyx
 
-[![Travis](https://travis-ci.com/evenorog/nyx.svg?branch=master)](https://travis-ci.com/evenorog/nyx)
+[![Rust](https://github.com/evenorog/nyx/actions/workflows/rust.yml/badge.svg)](https://github.com/evenorog/nyx/actions/workflows/rust.yml)
 [![Crates.io](https://img.shields.io/crates/v/nyx.svg)](https://crates.io/crates/nyx)
 [![Docs](https://docs.rs/nyx/badge.svg)](https://docs.rs/nyx)
 
