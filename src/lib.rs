@@ -14,8 +14,8 @@
 #![no_std]
 
 use core::convert::TryInto;
-use hmac::crypto_mac::Output;
-use hmac::{Hmac, Mac, NewMac};
+use hmac::{Hmac, Mac};
+use hmac::digest::CtOutput;
 use sha1::Sha1;
 
 /// This will generate 6 digits codes, with a skew of 1 and step size of 30.
@@ -58,7 +58,7 @@ impl Totp {
     }
 
     // Sign using SHA1.
-    fn sign(&self, key: &[u8], secs: u64) -> Output<Hmac<Sha1>> {
+    fn sign(&self, key: &[u8], secs: u64) -> CtOutput<Hmac<Sha1>> {
         let ctr = (secs / self.step).to_be_bytes();
         let mut mac = Hmac::<Sha1>::new_from_slice(key).unwrap();
         mac.update(&ctr);

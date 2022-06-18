@@ -13,5 +13,8 @@ exclude = ["/.travis.yml"]
 edition = "2021"
 
 [dependencies]
-hmac = { version = "0.11", default-features = false }
-sha-1 = { version = "0.9", default-features = false }
+hmac = { version = "0.12", default-features = false }
+sha-1 = { version = "0.10", default-features = false }
+
+[badges]
+maintenance = { status = "actively-developed" }
