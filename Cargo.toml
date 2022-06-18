@@ -1,6 +1,6 @@
 [package]
 name = "nyx"
-version = "2.2.0"
+version = "2.2.1"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "A no-std implementation of the TOTP algorithm."
 documentation = "https://docs.rs/nyx"
