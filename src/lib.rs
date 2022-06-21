@@ -52,12 +52,12 @@ struct Totp {
 }
 
 impl Totp {
-    /// Returns a new TOTP struct with the provided options.
+    /// Returns a new `TOTP` struct with the provided options.
     const fn options(digits: u32, skew: u8, step: u64) -> Totp {
         Totp { digits, skew, step }
     }
 
-    // Sign using SHA1.
+    /// Sign using `SHA1`.
     fn sign(&self, key: &[u8], secs: u64) -> CtOutput<Hmac<Sha1>> {
         let ctr = (secs / self.step).to_be_bytes();
         let mut mac = Hmac::<Sha1>::new_from_slice(key).unwrap();
@@ -65,7 +65,7 @@ impl Totp {
         mac.finalize()
     }
 
-    /// Generates the TOTP value.
+    /// Generates the `TOTP` value.
     fn generate(&self, key: &[u8], secs: u64) -> u32 {
         let signed = self.sign(key, secs).into_bytes();
         let offset = (signed[19] & 15) as usize;
@@ -88,18 +88,12 @@ impl Totp {
     }
 }
 
-impl Default for Totp {
-    fn default() -> Self {
-        TOTP
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::Totp;
 
     #[test]
-    fn totp_8_digits() {
+    fn totp_8_digits_0_skew_30_step() {
         // Test values from https://tools.ietf.org/html/rfc6238.
         const TOTP: Totp = Totp::options(8, 0, 30);
         assert!(TOTP.verify(b"12345678901234567890", 59, 94287082));
