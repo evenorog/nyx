@@ -14,8 +14,8 @@
 #![no_std]
 
 use core::convert::TryInto;
+use hmac::digest::Output;
 use hmac::{Hmac, Mac};
-use hmac::digest::CtOutput;
 use sha1::Sha1;
 
 /// This will generate 6 digits codes, with a skew of 1 and step size of 30.
@@ -58,21 +58,21 @@ impl Totp {
     }
 
     /// Sign using `SHA1`.
-    fn sign(&self, key: &[u8], secs: u64) -> CtOutput<Hmac<Sha1>> {
-        let ctr = (secs / self.step).to_be_bytes();
+    fn sign(&self, key: &[u8], secs: u64) -> Output<Hmac<Sha1>> {
+        let msg = (secs / self.step).to_be_bytes();
         let mut mac = Hmac::<Sha1>::new_from_slice(key).unwrap();
-        mac.update(&ctr);
-        mac.finalize()
+        mac.update(&msg);
+        mac.finalize().into_bytes()
     }
 
     /// Generates the `TOTP` value.
     fn generate(&self, key: &[u8], secs: u64) -> u32 {
-        let signed = self.sign(key, secs).into_bytes();
-        let offset = (signed[19] & 15) as usize;
+        let signed = self.sign(key, secs);
+        let offset = (signed[19] & 0xf) as usize;
         let buf = &signed[offset..offset + 4];
         let buf: [u8; 4] = buf.try_into().unwrap();
-        let data = u32::from_be_bytes(buf) & 0x7fff_ffff;
-        data % 10_u32.pow(self.digits)
+        let binary = u32::from_be_bytes(buf) & 0x7fff_ffff;
+        binary % 10_u32.pow(self.digits)
     }
 
     /// Checks if the given token matches the provided key and time.
