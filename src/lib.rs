@@ -13,7 +13,6 @@
 
 #![no_std]
 
-use core::convert::TryInto;
 use hmac::digest::Output;
 use hmac::{Hmac, Mac};
 use sha1::Sha1;
@@ -67,10 +66,9 @@ impl Totp {
 
     /// Generates the `TOTP` value.
     fn generate(&self, key: &[u8], secs: u64) -> u32 {
-        let signed = self.sign(key, secs);
-        let offset = (signed[19] & 0xf) as usize;
-        let buf = &signed[offset..offset + 4];
-        let buf: [u8; 4] = buf.try_into().unwrap();
+        let sign = self.sign(key, secs);
+        let i = (sign[19] & 0xf) as usize;
+        let buf = [sign[i], sign[i + 1], sign[i + 2], sign[i + 3]];
         let binary = u32::from_be_bytes(buf) & 0x7fff_ffff;
         binary % 10_u32.pow(self.digits)
     }
