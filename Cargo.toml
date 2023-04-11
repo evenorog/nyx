@@ -1,6 +1,6 @@
 [package]
 name = "nyx"
-version = "2.2.1"
+version = "2.2.2"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "A no-std implementation of the TOTP algorithm."
 documentation = "https://docs.rs/nyx"
@@ -9,7 +9,6 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["totp"]
 categories = ["authentication", "no-std"]
-exclude = ["/.travis.yml"]
 edition = "2021"
 
 [dependencies]
