@@ -1,4 +1,4 @@
-//! Small `no-std` implementation of the TOTP algorithm.
+//! A `no-std` implementation of the TOTP algorithm.
 //!
 //! Only SHA-1 is supported.
 //!

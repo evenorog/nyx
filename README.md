@@ -4,7 +4,7 @@
 [![Crates.io](https://img.shields.io/crates/v/nyx.svg)](https://crates.io/crates/nyx)
 [![Docs](https://docs.rs/nyx/badge.svg)](https://docs.rs/nyx)
 
-Small `no-std` implementation of the TOTP algorithm.
+A `no-std` implementation of the TOTP algorithm.
 
 Only SHA-1 is supported.
 
