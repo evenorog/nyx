@@ -1,6 +1,6 @@
 [package]
 name = "nyx"
-version = "2.2.2"
+version = "2.2.3"
 authors = ["evenorog <evenorog@gmail.com>"]
 description = "A no-std implementation of the TOTP algorithm."
 documentation = "https://docs.rs/nyx"
@@ -9,7 +9,7 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["totp"]
 categories = ["authentication", "no-std"]
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 hmac = { version = "0.12", default-features = false }
